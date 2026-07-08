@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvEnvironment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="&#x73af;&#x5883;"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/spEnvironment"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/spEnvironment"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvEnvironment"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etDevices"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:hint="&#x8bbe;&#x5907; ID&#xff08;&#x7528;&#x9017;&#x53f7;&#x5206;&#x9694;&#xff09;"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spEnvironment" />
+
+    <EditText
+        android:id="@+id/etFrom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:hint="&#x5f00;&#x59cb;&#x65f6;&#x95f4;&#xff1a;YYYY-MM-DD HH:MM:SS"
+        android:inputType="text"
+        app:layout_constraintEnd_toStartOf="@id/btnPickFrom"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etDevices" />
+
+    <Button
+        android:id="@+id/btnPickFrom"
+        android:layout_width="82dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="&#x9009;&#x62e9;"
+        app:layout_constraintBaseline_toBaselineOf="@id/etFrom"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:id="@+id/etTo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:hint="&#x7ed3;&#x675f;&#x65f6;&#x95f4;&#xff1a;YYYY-MM-DD HH:MM:SS"
+        android:inputType="text"
+        app:layout_constraintEnd_toStartOf="@id/btnPickTo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etFrom" />
+
+    <Button
+        android:id="@+id/btnPickTo"
+        android:layout_width="82dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="&#x9009;&#x62e9;"
+        app:layout_constraintBaseline_toBaselineOf="@id/etTo"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnRun"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="&#x6267;&#x884c;"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etTo" />
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnRun">
+
+        <TextView
+            android:id="@+id/txtLog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:text="&#x65e5;&#x5fd7;&#x8f93;&#x51fa;"
+            android:textIsSelectable="true" />
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

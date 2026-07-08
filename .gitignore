@@ -1,0 +1,22 @@
+# Gradle and Android build outputs
+.gradle/
+build/
+app/build/
+
+# Local machine configuration
+local.properties
+.android-sdk/
+
+# IDE files
+.idea/
+*.iml
+
+# Generated packages and logs
+*.apk
+*.aab
+*.ap_
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
