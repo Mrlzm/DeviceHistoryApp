@@ -1,15 +1,13 @@
 package com.example.devicehistory
 
-import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.DatePicker
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
-import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
@@ -41,41 +39,31 @@ class MainActivity : AppCompatActivity() {
             .getOrNull()
             ?.let { calendar.time = it }
 
-        val container = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(32, 12, 32, 0)
-        }
-        val datePicker = DatePicker(this).apply {
-            calendarViewShown = false
-            init(
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH),
-                null
-            )
-        }
-        val timePicker = TimePicker(this).apply {
-            setIs24HourView(true)
-            hour = calendar.get(Calendar.HOUR_OF_DAY)
-            minute = calendar.get(Calendar.MINUTE)
-        }
+        DatePickerDialog(
+            this,
+            { _, year, month, dayOfMonth ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-        container.addView(datePicker)
-        container.addView(timePicker)
-
-        AlertDialog.Builder(this)
-            .setTitle("\u9009\u62e9\u65e5\u671f\u65f6\u95f4")
-            .setView(container)
-            .setNegativeButton("\u53d6\u6d88", null)
-            .setPositiveButton("\u786e\u5b9a") { _, _ ->
-                calendar.set(datePicker.year, datePicker.month, datePicker.dayOfMonth)
-                calendar.set(Calendar.HOUR_OF_DAY, timePicker.hour)
-                calendar.set(Calendar.MINUTE, timePicker.minute)
-                calendar.set(Calendar.SECOND, 0)
-                target.setText(dateTimeFormat.format(calendar.time))
-                target.setSelection(target.text.length)
-            }
-            .show()
+                TimePickerDialog(
+                    this,
+                    { _, hourOfDay, minute ->
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                        calendar.set(Calendar.MINUTE, minute)
+                        calendar.set(Calendar.SECOND, 0)
+                        target.setText(dateTimeFormat.format(calendar.time))
+                        target.setSelection(target.text.length)
+                    },
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE),
+                    true
+                ).show()
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
