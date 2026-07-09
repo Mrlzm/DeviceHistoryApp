@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import android.text.method.ScrollingMovementMethod
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -24,6 +26,16 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private var devicesInput: EditText? = null
+    private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
+        val content = result.contents?.trim().orEmpty()
+        if (content.isEmpty()) return@registerForActivityResult
+        devicesInput?.let { input ->
+            val current = input.text.toString().trim()
+            input.setText(if (current.isEmpty()) content else "$current\n$content")
+            input.setSelection(input.text.length)
+        }
+    }
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
         isLenient = false
     }
@@ -103,6 +115,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun startDeviceScan() {
+        val options = ScanOptions()
+            .setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+            .setPrompt("\u626b\u63cf\u8bbe\u5907 ID")
+            .setBeepEnabled(false)
+            .setOrientationLocked(false)
+        barcodeLauncher.launch(options)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -113,6 +134,8 @@ class MainActivity : AppCompatActivity() {
 
         val spEnvironment = findViewById<AutoCompleteTextView>(R.id.spEnvironment)
         val etDevices = findViewById<EditText>(R.id.etDevices)
+        devicesInput = etDevices
+        val btnScanDevice = findViewById<ImageButton>(R.id.btnScanDevice)
         val etFrom = findViewById<EditText>(R.id.etFrom)
         val etTo = findViewById<EditText>(R.id.etTo)
         val btnPickFrom = findViewById<ImageButton>(R.id.btnPickFrom)
@@ -147,6 +170,7 @@ class MainActivity : AppCompatActivity() {
         etTo.setOnClickListener { showDatePicker(etTo) }
         btnPickFrom.setOnClickListener { showDatePicker(etFrom) }
         btnPickTo.setOnClickListener { showDatePicker(etTo) }
+        btnScanDevice.setOnClickListener { startDeviceScan() }
 
         btn.setOnClickListener {
             val environment = environments.firstOrNull { it.label == spEnvironment.text.toString() }
@@ -196,6 +220,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        devicesInput = null
         scope.cancel()
     }
 }

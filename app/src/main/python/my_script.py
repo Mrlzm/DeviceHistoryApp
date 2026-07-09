@@ -1,7 +1,12 @@
 import datetime
+from concurrent.futures import ThreadPoolExecutor
 import re
 
 import requests
+
+PAGE_SIZE = 20
+REQUEST_TIMEOUT = (5, 15)
+MAX_WORKERS = 4
 
 
 def to_timestamp_ms(s: str, fmt: str = "%Y-%m-%d %H:%M:%S"):
@@ -12,7 +17,7 @@ def to_timestamp_ms(s: str, fmt: str = "%Y-%m-%d %H:%M:%S"):
 def his_log(deviceid, from_time, to_time, base_url, token, session_obj=None):
     sess = session_obj or requests.Session()
     history_data = []
-    total = 0
+    total = None
     headers = {
         "accept": "application/json",
         "Authorization": token,
@@ -21,25 +26,26 @@ def his_log(deviceid, from_time, to_time, base_url, token, session_obj=None):
     for current in range(1, 1000):
         params = {
             "current": current,
-            "pageSize": 100,
+            "pageSize": PAGE_SIZE,
             "devEui": deviceid,
             "from": from_time,
             "to": to_time,
         }
-        resp = sess.get(history_url, headers=headers, params=params, timeout=30)
+        resp = sess.get(history_url, headers=headers, params=params, timeout=REQUEST_TIMEOUT)
         if resp.status_code == 200:
             data = resp.json()
-            total = data.get("total", total)
+            if data.get("total") is not None:
+                total = data.get("total")
             page = data.get("data") or []
             if not page:
                 break
             history_data.append(page)
-            if current * params["pageSize"] >= total:
+            if isinstance(total, int) and total > 0 and current * params["pageSize"] >= total:
                 break
         else:
             print(f"\u8bf7\u6c42\u5931\u8d25\uff0c\u72b6\u6001\u7801: {resp.status_code}")
             break
-    return [history_data, total]
+    return [history_data, total or 0]
 
 
 def analyze_gps_data(groups):
@@ -119,6 +125,16 @@ def metadata_value(metadata, *names):
     return None
 
 
+def rx_info_value(metadata, name):
+    rx_info = metadata.get("rxInfo") or metadata.get("rxinfo") or []
+    if not isinstance(rx_info, list):
+        return None
+    for item in rx_info:
+        if isinstance(item, dict) and item.get(name) is not None:
+            return item.get(name)
+    return None
+
+
 def compact_time(value):
     if value is None:
         return ""
@@ -151,8 +167,8 @@ def format_device_log(device, from_str, to_str, groups):
             record.get("time"),
         ))
         dr = first_value(metadata_value(metadata, "dr"), record.get("dr"))
-        rssi = first_value(metadata_value(metadata, "rssi"), record.get("rssi"))
-        snr = first_value(metadata_value(metadata, "snr"), record.get("snr"))
+        rssi = first_value(metadata_value(metadata, "rssi"), rx_info_value(metadata, "rssi"), record.get("rssi"))
+        snr = first_value(metadata_value(metadata, "snr"), rx_info_value(metadata, "snr"), record.get("snr"))
         battery = first_value(
             payload_value(record, "battery"),
             payload_contains_value(record, "battery"),
@@ -172,9 +188,11 @@ def format_device_log(device, from_str, to_str, groups):
 def run_query(devices_csv: str, from_str: str, to_str: str, base_url: str, token: str) -> str:
     from_ms = to_timestamp_ms(from_str)
     to_ms = to_timestamp_ms(to_str)
-    out_lines = []
-    with requests.Session() as sess:
-        for dev in [d.strip() for d in re.split(r"[\s,]+", devices_csv) if d.strip()]:
+    devices = [d.strip() for d in re.split(r"[\s,]+", devices_csv) if d.strip()]
+
+    def query_device(dev):
+        out_lines = []
+        with requests.Session() as sess:
             his = his_log(dev, from_ms, to_ms, base_url, token, session_obj=sess)
             stats = analyze_gps_data(his[0])
             ble_count = stats[2]
@@ -182,4 +200,11 @@ def run_query(devices_csv: str, from_str: str, to_str: str, base_url: str, token
             out_lines.extend(format_device_log(dev, from_str, to_str, his[0]))
             out_lines.append(f"\u6c47\u603b: lora(\u53bb\u91cd)>{lora_unique}<, ble>{ble_count}<, \u7a7a\u5305>{stats[0]}<")
             out_lines.append("")
+        return out_lines
+
+    out_lines = []
+    worker_count = min(MAX_WORKERS, max(1, len(devices)))
+    with ThreadPoolExecutor(max_workers=worker_count) as executor:
+        for lines in executor.map(query_device, devices):
+            out_lines.extend(lines)
     return "\n".join(out_lines).rstrip() + "\n"
