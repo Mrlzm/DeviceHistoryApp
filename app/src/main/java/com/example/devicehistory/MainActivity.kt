@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.chaquo.python.Python
@@ -113,8 +114,8 @@ class MainActivity : AppCompatActivity() {
         val etDevices = findViewById<EditText>(R.id.etDevices)
         val etFrom = findViewById<EditText>(R.id.etFrom)
         val etTo = findViewById<EditText>(R.id.etTo)
-        val btnPickFrom = findViewById<Button>(R.id.btnPickFrom)
-        val btnPickTo = findViewById<Button>(R.id.btnPickTo)
+        val btnPickFrom = findViewById<ImageButton>(R.id.btnPickFrom)
+        val btnPickTo = findViewById<ImageButton>(R.id.btnPickTo)
         val acFromHour = findViewById<AutoCompleteTextView>(R.id.acFromHour)
         val acFromMinute = findViewById<AutoCompleteTextView>(R.id.acFromMinute)
         val acToHour = findViewById<AutoCompleteTextView>(R.id.acToHour)
