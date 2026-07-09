@@ -1,6 +1,8 @@
 package com.example.devicehistory
 
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -8,12 +10,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import android.text.method.ScrollingMovementMethod
-import com.journeyapps.barcodescanner.ScanContract
-import com.journeyapps.barcodescanner.ScanOptions
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -27,8 +28,9 @@ import kotlinx.coroutines.withContext
 class MainActivity : AppCompatActivity() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var devicesInput: EditText? = null
-    private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
-        val content = result.contents?.trim().orEmpty()
+    private val barcodeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
+        val content = result.data?.getStringExtra(QrScanActivity.EXTRA_SCAN_RESULT)?.trim().orEmpty()
         if (content.isEmpty()) return@registerForActivityResult
         devicesInput?.let { input ->
             val current = input.text.toString().trim()
@@ -116,12 +118,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startDeviceScan() {
-        val options = ScanOptions()
-            .setDesiredBarcodeFormats(ScanOptions.QR_CODE)
-            .setPrompt("\u626b\u63cf\u8bbe\u5907 ID")
-            .setBeepEnabled(false)
-            .setOrientationLocked(false)
-        barcodeLauncher.launch(options)
+        barcodeLauncher.launch(Intent(this, QrScanActivity::class.java))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
