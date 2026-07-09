@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
+import android.text.method.ScrollingMovementMethod
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -122,6 +123,8 @@ class MainActivity : AppCompatActivity() {
         val acToMinute = findViewById<AutoCompleteTextView>(R.id.acToMinute)
         val btn = findViewById<Button>(R.id.btnRun)
         val txt = findViewById<TextView>(R.id.txtLog)
+        txt.movementMethod = ScrollingMovementMethod()
+        txt.setHorizontallyScrolling(false)
 
         val environments = ApiEnvironment.entries.toTypedArray()
         setupTextDropdown(spEnvironment, environments.map { it.label }, environments.first().label)
