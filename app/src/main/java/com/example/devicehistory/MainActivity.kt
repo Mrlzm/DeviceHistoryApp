@@ -127,14 +127,18 @@ class MainActivity : AppCompatActivity() {
 
         val hours = (0..23).map { "%02d".format(it) }
         val minutes = (0..59).map { "%02d".format(it) }
-        setupNumberDropdown(acFromHour, hours, "18")
-        setupNumberDropdown(acFromMinute, minutes, "42")
-        setupNumberDropdown(acToHour, hours, "00")
-        setupNumberDropdown(acToMinute, minutes, "00")
-
         etDevices.setText("E086B252400000CF\nE086B2524000002B")
-        etFrom.setText("2025-10-29")
-        etTo.setText("2025-10-30")
+        val toCalendar = Calendar.getInstance()
+        val fromCalendar = Calendar.getInstance().apply {
+            time = toCalendar.time
+            add(Calendar.HOUR_OF_DAY, -6)
+        }
+        etFrom.setText(dateFormat.format(fromCalendar.time))
+        etTo.setText(dateFormat.format(toCalendar.time))
+        setupNumberDropdown(acFromHour, hours, "%02d".format(fromCalendar.get(Calendar.HOUR_OF_DAY)))
+        setupNumberDropdown(acFromMinute, minutes, "%02d".format(fromCalendar.get(Calendar.MINUTE)))
+        setupNumberDropdown(acToHour, hours, "%02d".format(toCalendar.get(Calendar.HOUR_OF_DAY)))
+        setupNumberDropdown(acToMinute, minutes, "%02d".format(toCalendar.get(Calendar.MINUTE)))
         etFrom.setOnClickListener { showDatePicker(etFrom) }
         etTo.setOnClickListener { showDatePicker(etTo) }
         btnPickFrom.setOnClickListener { showDatePicker(etFrom) }
