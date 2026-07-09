@@ -2,7 +2,6 @@ package com.example.devicehistory
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -11,7 +10,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
-import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -51,13 +49,13 @@ class MainActivity : AppCompatActivity() {
         return calendar
     }
 
-    private fun showDatePicker(target: EditText, hourView: AutoCompleteTextView, minuteView: AutoCompleteTextView) {
+    private fun showDatePicker(target: EditText) {
         val calendar = parseCalendar(target.text.toString())
         DatePickerDialog(
             this,
             { _, year, month, dayOfMonth ->
                 calendar.set(year, month, dayOfMonth)
-                updateDateTimeText(target, hourView, minuteView, calendar)
+                updateDateText(target, calendar)
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -65,18 +63,8 @@ class MainActivity : AppCompatActivity() {
         ).show()
     }
 
-    private fun updateDateTimeText(
-        target: EditText,
-        hourView: AutoCompleteTextView,
-        minuteView: AutoCompleteTextView,
-        baseCalendar: Calendar = parseCalendar(target.text.toString())
-    ) {
-        val hour = hourView.text.toString().toIntOrNull() ?: baseCalendar.get(Calendar.HOUR_OF_DAY)
-        val minute = minuteView.text.toString().toIntOrNull() ?: baseCalendar.get(Calendar.MINUTE)
-        baseCalendar.set(Calendar.HOUR_OF_DAY, hour)
-        baseCalendar.set(Calendar.MINUTE, minute)
-        baseCalendar.set(Calendar.SECOND, 0)
-        target.setText(dateTimeFormat.format(baseCalendar.time))
+    private fun updateDateText(target: EditText, baseCalendar: Calendar = parseCalendar(target.text.toString())) {
+        target.setText(dateFormat.format(baseCalendar.time))
         target.setSelection(target.text.length)
     }
 
@@ -95,7 +83,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupNumberDropdown(view: AutoCompleteTextView, values: List<String>, selected: String) {
         view.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, values))
+        view.threshold = 0
         view.setText(selected, false)
+        view.setOnClickListener { view.showDropDown() }
+        view.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) view.showDropDown()
+        }
+    }
+
+    private fun setupTextDropdown(view: AutoCompleteTextView, values: List<String>, selected: String) {
+        view.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, values))
+        view.threshold = 0
+        view.setText(selected, false)
+        view.setOnClickListener { view.showDropDown() }
+        view.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) view.showDropDown()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,11 +110,11 @@ class MainActivity : AppCompatActivity() {
         val module = py.getModule("my_script")
 
         val spEnvironment = findViewById<AutoCompleteTextView>(R.id.spEnvironment)
-        val tilFromDate = findViewById<TextInputLayout>(R.id.tilFromDate)
-        val tilToDate = findViewById<TextInputLayout>(R.id.tilToDate)
         val etDevices = findViewById<EditText>(R.id.etDevices)
         val etFrom = findViewById<EditText>(R.id.etFrom)
         val etTo = findViewById<EditText>(R.id.etTo)
+        val btnPickFrom = findViewById<Button>(R.id.btnPickFrom)
+        val btnPickTo = findViewById<Button>(R.id.btnPickTo)
         val acFromHour = findViewById<AutoCompleteTextView>(R.id.acFromHour)
         val acFromMinute = findViewById<AutoCompleteTextView>(R.id.acFromMinute)
         val acToHour = findViewById<AutoCompleteTextView>(R.id.acToHour)
@@ -120,8 +123,7 @@ class MainActivity : AppCompatActivity() {
         val txt = findViewById<TextView>(R.id.txtLog)
 
         val environments = ApiEnvironment.entries.toTypedArray()
-        spEnvironment.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, environments.map { it.label }))
-        spEnvironment.setText(environments.first().label, false)
+        setupTextDropdown(spEnvironment, environments.map { it.label }, environments.first().label)
 
         val hours = (0..23).map { "%02d".format(it) }
         val minutes = (0..59).map { "%02d".format(it) }
@@ -131,20 +133,12 @@ class MainActivity : AppCompatActivity() {
         setupNumberDropdown(acToMinute, minutes, "00")
 
         etDevices.setText("E086B252400000CF\nE086B2524000002B")
-        etFrom.setText("2025-10-29 18:42:00")
-        etTo.setText("2025-10-30 00:00:00")
-        val timeChangedListener = AdapterView.OnItemClickListener { parent, _, _, _ ->
-            when (parent) {
-                acFromHour, acFromMinute -> updateDateTimeText(etFrom, acFromHour, acFromMinute)
-                acToHour, acToMinute -> updateDateTimeText(etTo, acToHour, acToMinute)
-            }
-        }
-        acFromHour.onItemClickListener = timeChangedListener
-        acFromMinute.onItemClickListener = timeChangedListener
-        acToHour.onItemClickListener = timeChangedListener
-        acToMinute.onItemClickListener = timeChangedListener
-        tilFromDate.setEndIconOnClickListener { showDatePicker(etFrom, acFromHour, acFromMinute) }
-        tilToDate.setEndIconOnClickListener { showDatePicker(etTo, acToHour, acToMinute) }
+        etFrom.setText("2025-10-29")
+        etTo.setText("2025-10-30")
+        etFrom.setOnClickListener { showDatePicker(etFrom) }
+        etTo.setOnClickListener { showDatePicker(etTo) }
+        btnPickFrom.setOnClickListener { showDatePicker(etFrom) }
+        btnPickTo.setOnClickListener { showDatePicker(etTo) }
 
         btn.setOnClickListener {
             val environment = environments.firstOrNull { it.label == spEnvironment.text.toString() }
