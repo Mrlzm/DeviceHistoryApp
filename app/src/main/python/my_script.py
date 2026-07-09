@@ -1,4 +1,5 @@
 import datetime
+import re
 
 import requests
 
@@ -80,7 +81,7 @@ def run_query(devices_csv: str, from_str: str, to_str: str, base_url: str, token
     to_ms = to_timestamp_ms(to_str)
     out_lines = []
     with requests.Session() as sess:
-        for dev in [d.strip() for d in devices_csv.split(",") if d.strip()]:
+        for dev in [d.strip() for d in re.split(r"[\s,]+", devices_csv) if d.strip()]:
             his = his_log(dev, from_ms, to_ms, base_url, token, session_obj=sess)
             stats = analyze_gps_data(his[0])
             ble_count = stats[2]

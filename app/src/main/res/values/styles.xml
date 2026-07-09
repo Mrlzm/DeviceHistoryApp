@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.DeviceHistoryTool" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#7054B3</item>
+        <item name="colorPrimaryVariant">#5C4597</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSecondary">#7054B3</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">#FCF7FC</item>
+        <item name="android:navigationBarColor">#FCF7FC</item>
+    </style>
+</resources>

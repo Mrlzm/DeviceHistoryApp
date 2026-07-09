@@ -1,112 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FCF7FC"
+    android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/tvEnvironment"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="&#x73af;&#x5883;"
-        android:textSize="16sp"
-        app:layout_constraintBaseline_toBaselineOf="@id/spEnvironment"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:orientation="vertical"
+        android:paddingStart="22dp"
+        android:paddingTop="28dp"
+        android:paddingEnd="22dp"
+        android:paddingBottom="16dp">
 
-    <Spinner
-        android:id="@+id/spEnvironment"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tvEnvironment"
-        app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilEnvironment"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="&#x73af;&#x5883;"
+            app:boxStrokeColor="#8F8796"
+            app:hintTextColor="#7D7485">
 
-    <EditText
-        android:id="@+id/etDevices"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:hint="&#x8bbe;&#x5907; ID&#xff08;&#x7528;&#x9017;&#x53f7;&#x5206;&#x9694;&#xff09;"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spEnvironment" />
+            <AutoCompleteTextView
+                android:id="@+id/spEnvironment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:textSize="16sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/etFrom"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:hint="&#x5f00;&#x59cb;&#x65f6;&#x95f4;&#xff1a;YYYY-MM-DD HH:MM:SS"
-        android:inputType="text"
-        app:layout_constraintEnd_toStartOf="@id/btnPickFrom"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etDevices" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilDevices"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:hint="&#x8bbe;&#x5907; ID&#xff08;&#x6bcf;&#x884c;&#x4e00;&#x4e2a;&#xff0c;&#x6216;&#x7528;&#x9017;&#x53f7;/&#x7a7a;&#x683c;&#x5206;&#x9694;&#xff09;"
+            app:boxStrokeColor="#8F8796"
+            app:hintTextColor="#7D7485">
 
-    <Button
-        android:id="@+id/btnPickFrom"
-        android:layout_width="82dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="&#x9009;&#x62e9;"
-        app:layout_constraintBaseline_toBaselineOf="@id/etFrom"
-        app:layout_constraintEnd_toEndOf="parent" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDevices"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|start"
+                android:inputType="textMultiLine|textNoSuggestions"
+                android:minLines="3"
+                android:textSize="16sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/etTo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:hint="&#x7ed3;&#x675f;&#x65f6;&#x95f4;&#xff1a;YYYY-MM-DD HH:MM:SS"
-        android:inputType="text"
-        app:layout_constraintEnd_toStartOf="@id/btnPickTo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etFrom" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btnPickTo"
-        android:layout_width="82dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="&#x9009;&#x62e9;"
-        app:layout_constraintBaseline_toBaselineOf="@id/etTo"
-        app:layout_constraintEnd_toEndOf="parent" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilFromDate"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2.2"
+                android:hint="&#x5f00;&#x59cb;&#x65f6;&#x95f4;"
+                app:boxStrokeColor="#8F8796"
+                app:endIconDrawable="@android:drawable/ic_menu_my_calendar"
+                app:endIconMode="custom"
+                app:hintTextColor="#7D7485">
 
-    <Button
-        android:id="@+id/btnRun"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="&#x6267;&#x884c;"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etTo" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFrom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="datetime"
+                    android:singleLine="true"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <ScrollView
-        android:id="@+id/scroll"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnRun">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilFromHour"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:hint="&#x65f6;"
+                app:boxStrokeColor="#8F8796"
+                app:hintTextColor="#7D7485">
+
+                <AutoCompleteTextView
+                    android:id="@+id/acFromHour"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:singleLine="true"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilFromMinute"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:hint="&#x5206;"
+                app:boxStrokeColor="#8F8796"
+                app:hintTextColor="#7D7485">
+
+                <AutoCompleteTextView
+                    android:id="@+id/acFromMinute"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:singleLine="true"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilToDate"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2.2"
+                android:hint="&#x7ed3;&#x675f;&#x65f6;&#x95f4;"
+                app:boxStrokeColor="#8F8796"
+                app:endIconDrawable="@android:drawable/ic_menu_my_calendar"
+                app:endIconMode="custom"
+                app:hintTextColor="#7D7485">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etTo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="datetime"
+                    android:singleLine="true"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilToHour"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:hint="&#x65f6;"
+                app:boxStrokeColor="#8F8796"
+                app:hintTextColor="#7D7485">
+
+                <AutoCompleteTextView
+                    android:id="@+id/acToHour"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:singleLine="true"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilToMinute"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:hint="&#x5206;"
+                app:boxStrokeColor="#8F8796"
+                app:hintTextColor="#7D7485">
+
+                <AutoCompleteTextView
+                    android:id="@+id/acToMinute"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:singleLine="true"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRun"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="22dp"
+            android:text="&#x6267;&#x884c;"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:backgroundTint="#7054B3"
+            app:cornerRadius="4dp" />
 
         <TextView
             android:id="@+id/txtLog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
             android:fontFamily="monospace"
             android:text="&#x65e5;&#x5fd7;&#x8f93;&#x51fa;"
-            android:textIsSelectable="true" />
-    </ScrollView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:textIsSelectable="true"
+            android:textSize="14sp" />
+    </LinearLayout>
+</ScrollView>
